@@ -29,7 +29,7 @@ const bookStore = {
         },
         {
             id:5,
-            title: 'You Don’t Know JS',
+            title: 'You Don\'t Know JS',
             author: 'Kyle Simpson',
             imageUrl: 'https://images-na.ssl-images-amazon.com/images/I/41T5H8u7fUL._SX331_BO1,204,203,200_.jpg'
         },
@@ -44,4 +44,66 @@ const bookStore = {
 }
 
 // Write your code here!
+console.log("JavaScript is working!");
 
+const bookStoreTitle = document.getElementById("header");
+bookStoreTitle.textContent = "Flatbooks";
+
+const bookList = document.getElementById("book-list");
+
+
+
+function displayBooks() {
+    bookList.innerHTML = "";
+
+    bookStore.books.forEach(book => {
+
+        const li = document.createElement("li");
+
+        const title = document.createElement("h3");
+        const author = document.createElement("p");
+        const img = document.createElement("img");
+
+        title.textContent = book.title;
+        author.textContent = book.author;
+        img.src = book.imageUrl;
+        img.alt = book.title;
+        img.style.width = "120px";
+
+        li.appendChild(title);
+        li.appendChild(author);
+        li.appendChild(img);
+    
+
+        bookList.appendChild(li);
+    });
+}
+displayBooks();
+
+const form = document.getElementById("book-form");
+
+form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    console.log("Form submitted!");
+
+    const newBook = {
+        title: document.getElementById("title").value,
+        author: document.getElementById("author").value,
+        image: document.getElementById("imageUrl").value,
+        
+    };
+
+    fetch("http://localhost:3000/books", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(newBook)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Book added:", data);
+        bookStore.books.push(data);
+        displayBooks(data);
+    })
+});
